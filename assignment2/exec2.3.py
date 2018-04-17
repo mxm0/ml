@@ -46,58 +46,22 @@ plt.colorbar()
 plt.show()
 '''
 # Splitting data set 8/20-training/test
-
-longitude_train, longitude_test,\
-latitude_train, latitude_test,\
-house_age_train, house_age_test,\
-tot_rooms_train, tot_rooms_test,\
-tot_bedrooms_train, tot_bedrooms_test,\
-population_train, population_test,\
-households_train, households_test,\
-median_income_train, median_income_test,\
-median_house_value_train, median_house_value_test,\
-ocean_proximity_train, ocean_proximity_test = train_test_split(df['longitude'],
-                                                                     df['latitude'],
-                                                                     df['housing_median_age'],
-                                                                     df['total_rooms'],
-                                                                     df['total_bedrooms'],
-                                                                     df['population'],
-                                                                     df['households'],
-                                                                     df['median_income'],
-                                                                     df['median_house_value'],
-                                                                     df['ocean_proximity'],
-                                                                     test_size =0.2) 
-
-
+train_set, test_set = train_test_split(df, test_size = 0.2)
 # Recaculting max, min, avg for both training and test dataset
-tot_bedrooms_train = [x for x in tot_bedrooms_train if ~np.isnan(x)]
-tot_bedrooms_test = [x for x in tot_bedrooms_test if ~np.isnan(x)]
-
-train_test_set = {'longitude':[longitude_train, longitude_test],\
-                  'latitude':[latitude_train, latitude_test],\
-                  'house_age':[house_age_train, house_age_test],\
-                  'tot_rooms':[tot_rooms_train, tot_rooms_test],\
-                  'tot_bedrooms':[tot_bedrooms_train, tot_bedrooms_test],\
-                  'population':[population_train, population_test],\
-                  'households':[households_train, households_test],\
-                  'median_income':[median_income_train, median_income_test],\
-                  'house_value':[median_house_value_train, median_house_value_test],\
-                  'ocean_proximity':[ocean_proximity_train, ocean_proximity_test]}
-
-for key in train_test_set:
-    ts_set = train_test_set[key]
-    train = np.array(ts_set[0])
-    test = np.array(ts_set[1])
-    if key != 'ocean_proximity':
-        # Training data
-        print('Max value for', key, 'training:', np.max(train))
-        print('Min value for', key, 'training:', np.min(train))
-        print('Avg value for', key, 'training:', np.average(train), '\n')
+for train_col, test_col in zip(train_set, test_set):
+    if train_col != 'ocean_proximity' or test_col != 'ocean_proximity':
+        train_data = np.array(train_set[train_col])
+        test_data = np.array(test_set[test_col])
+        train_data = [x for x in train_data if ~np.isnan(x)]
+        test_data = [x for x in test_data if ~np.isnan(x)]
+        # Train data
+        print('Max value for', train_col, 'training: ', np.max(train_data))
+        print('Min value for', train_col, 'training: ', np.min(train_data))
+        print('Avg value for', train_col, 'training: ', np.average(train_data))
         # Test data
-        print('Max value for', key, 'test:', np.max(test))
-        print('Min value for', key, 'test:', np.min(test))
-        print('Avg value for', key, 'test:', np.average(test), '\n')
-
+        print('Max value for', test_col, 'test: ', np.max(test_data))
+        print('Min value for', test_col, 'test: ', np.min(test_data))
+        print('Avg value for', test_col, 'test: ', np.average(test_data), '\n')
 '''
 Since the mean values seem to be equal or just differ for few points, we can
 assume that the distribution match. Plus plotting an histogram of the two
