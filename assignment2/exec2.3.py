@@ -4,8 +4,77 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split 
 from collections import Counter
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import mean_squared_error
 
-# Compute average error of classifier
+# Part a - load data
+df = pd.read_csv('housing.csv')
+# Part b - Print max, min and their index for each data column.
+'''
+for col in df:
+    if col != 'ocean_proximity':
+        data = np.array(df[col])
+        data = [x for x in data if ~np.isnan(x)]
+        print('Max value for', col, ': ', np.max(data), ', at index=', np.argmax(data))
+        print('Min value for', col, ': ', np.min(data), ', at index=', np.argmin(data))
+        print('Avg value for', col, ': ', np.average(data), '\n')
+        plt.figure(col)
+        plt.title('Histogram values')
+        plt.xlabel('Value')
+        plt.ylabel('Frequency')
+        plt.hist([x for x in df[col] if ~np.isnan(x)])
+    else:
+        plt.figure(col)
+        plt.title('Histogram values')
+        plt.xlabel('Value')
+        plt.ylabel('Frequency')
+        plt.hist([x for x in df[col] if ~pd.isnull(x)])
+'''
+# Part c & d - Plotting data
+'''
+From the data plotted it looks like the median income, housing median age and
+median house value data are the closest to a normal distribution.
+'''
+'''
+# Plot latitude/longitude
+plt.figure('GeoMap')
+plt.title('Geographic Map House values')
+plt.xlabel('Longitude')
+plt.ylabel('Latitude')
+latitudes = df['latitude']
+longitudes = df['longitude']
+house_values = df['median_house_value']
+cm = plt.cm.get_cmap('RdBu')
+plt.scatter(longitudes, latitudes, alpha=0.2, c=house_values, cmap=cm)
+plt.colorbar()
+plt.show()
+'''
+# Part e - Splitting data set 80/20-training/test
+train_set, test_set = train_test_split(df, test_size = 0.2, random_state = 42)
+'''
+# Recaculting max, min, avg for both training and test dataset
+for train_col, test_col in zip(train_set, test_set):
+    if train_col != 'ocean_proximity' or test_col != 'ocean_proximity':
+        train_data = np.array(train_set[train_col])
+        test_data = np.array(test_set[test_col])
+        train_data = [x for x in train_data if ~np.isnan(x)]
+        test_data = [x for x in test_data if ~np.isnan(x)]
+        # Train data
+        print('Max value for', train_col, 'training: ', np.max(train_data))
+        print('Min value for', train_col, 'training: ', np.min(train_data))
+        print('Avg value for', train_col, 'training: ', np.average(train_data))
+        # Test data
+        print('Max value for', test_col, 'test: ', np.max(test_data))
+        print('Min value for', test_col, 'test: ', np.min(test_data))
+        print('Avg value for', test_col, 'test: ', np.average(test_data), '\n')
+'''
+'''
+Since the mean values seem to be equal or just differ for few points, we can
+assume that the distribution match. Plus plotting an histogram of the two
+distribution shows it too.
+'''
+#kNN Algorithm to predict housing value
+
+# Part a - Compute average error of classifier
 def loss_function(y_predicted, y_expected):
     err = 0
     n_points = len(y_predicted)
@@ -13,7 +82,17 @@ def loss_function(y_predicted, y_expected):
       err += np.square((y_expected[i] - y_predicted[i]))
     return 1/n_points * err
 
-# K-nearest neighbor implementation
+# Part b - Defining targets for distance function
+y_train = np.array(train_set['median_house_value'])
+y_test = np.array(test_set['median_house_value'])
+X_train = train_set.copy()
+X_test = test_set.copy()
+X_train.drop(['median_house_value', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'ocean_proximity'], axis=1, inplace=True)
+X_test.drop(['median_house_value', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'ocean_proximity'], axis=1, inplace=True)
+
+# Part c - Implement and run KNN
+
+# Possible K-nearest neighbor implementation
 def knn(X_train, y_train, X_test, y_predicted, k):
     test_point_n = len(X_test)
     current_test_point = 0
@@ -39,100 +118,32 @@ def knn(X_train, y_train, X_test, y_predicted, k):
         current_test_point += 1
         print('Y predicted for test point number', current_test_point, '/', test_point_n)
 
-#load data
-df = pd.read_csv('housing.csv')
-# Print max, min and their index for each data column.
-'''
-for col in df:
-    if col != 'ocean_proximity':
-        data = np.array(df[col])
-        data = [x for x in data if ~np.isnan(x)]
-        print('Max value for', col, ': ', np.max(data), ', at index=', np.argmax(data))
-        print('Min value for', col, ': ', np.min(data), ', at index=', np.argmin(data))
-        print('Avg value for', col, ': ', np.average(data), '\n')
-        plt.figure(col)
-        plt.title('Histogram values')
-        plt.xlabel('Value')
-        plt.ylabel('Frequency')
-        plt.hist([x for x in df[col] if ~np.isnan(x)])
-    else:
-        plt.figure(col)
-        plt.title('Histogram values')
-        plt.xlabel('Value')
-        plt.ylabel('Frequency')
-        plt.hist([x for x in df[col] if ~pd.isnull(x)])
-'''
-# Plotting data
-'''
-From the data plotted it looks like the median income, housing median age and
-median house value data are the closest to a normal distribution.
-'''
-'''
-# Plot latitude/longitude
-plt.figure('GeoMap')
-plt.title('Geographic Map House values')
-plt.xlabel('Longitude')
-plt.ylabel('Latitude')
-latitudes = df['latitude']
-longitudes = df['longitude']
-house_values = df['median_house_value']
-cm = plt.cm.get_cmap('RdBu')
-plt.scatter(longitudes, latitudes, alpha=0.2, c=house_values, cmap=cm)
-plt.colorbar()
-plt.show()
-'''
-# Splitting data set 8/20-training/test
-train_set, test_set = train_test_split(df, test_size = 0.2, random_state = 42)
-'''
-# Recaculting max, min, avg for both training and test dataset
-for train_col, test_col in zip(train_set, test_set):
-    if train_col != 'ocean_proximity' or test_col != 'ocean_proximity':
-        train_data = np.array(train_set[train_col])
-        test_data = np.array(test_set[test_col])
-        train_data = [x for x in train_data if ~np.isnan(x)]
-        test_data = [x for x in test_data if ~np.isnan(x)]
-        # Train data
-        print('Max value for', train_col, 'training: ', np.max(train_data))
-        print('Min value for', train_col, 'training: ', np.min(train_data))
-        print('Avg value for', train_col, 'training: ', np.average(train_data))
-        # Test data
-        print('Max value for', test_col, 'test: ', np.max(test_data))
-        print('Min value for', test_col, 'test: ', np.min(test_data))
-        print('Avg value for', test_col, 'test: ', np.average(test_data), '\n')
-'''
-'''
-Since the mean values seem to be equal or just differ for few points, we can
-assume that the distribution match. Plus plotting an histogram of the two
-distribution shows it too.
-'''
-#kNN Algorithm to predict housing value
-# Set targetis
-y_train = np.array(train_set['median_house_value'])
-y_test = np.array(test_set['median_house_value'])
-X_train = train_set.copy()
-X_test = test_set.copy()
-X_train.drop(['median_house_value', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'ocean_proximity'], axis=1, inplace=True)
-X_test.drop(['median_house_value', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'ocean_proximity'], axis=1, inplace=True)
-
-# Run KNN
 y_predicted_training = []
 y_predicted_test = []
-k = 17
-# KNN Predict training
-#knn(np.array(X_train), y_train, np.array(X_train), y_predicted_training, k)
-# KNN Predict test
-#knn(np.array(X_train), y_train, np.array(X_test), y_predicted_test, k)
-knn = KNeighborsClassifier(n_neighbors=17)
-knn.fir(np.array(X_train), y_train)
+k = 3
+
+# Part d - predict house values
+# KNN Predict using own implementation (really slow)
+#knn(np.array(X_train)[:1000], y_train, np.array(X_train)[:1000], y_predicted_training, k)
+#knn(np.array(X_train), y_train, np.array(X_test), y_predicted_training, k)
+
+# KNN Predict using sklearn library
+knn = KNeighborsClassifier(n_neighbors=k)
+knn.fit(np.array(X_train), y_train)
 y_predicted_test = knn.predict(np.array(X_test))
+y_predicted_training = knn.predict(np.array(X_train))
 
 # Compute training error
-#print('Training error:', loss_function(y_predicted_training, y_train))
+print('Training error:', loss_function(y_predicted_training, y_train))
 # Compute test error
 print('Test error:', loss_function(y_predicted_test, y_test))
 
-
 '''
-Using implemented kNN training error = ; test error = 2714582459.19
-Using sklearn kNN, training error = ; test error = 6066602137.98
+For K = 1 - training error = 243519; test error = 4457697671
+For K = 3 - training error = 3584965976; test error = 5261659069
+For k = 5 - training error = 5097664193; test error = 6249786036
+For k = 7 - training error = 6028138988; test error = 6950192896
+For k = 11 - training error = 7150380685; test error = 8368870760
+For k = 13 - training error = 7637452119; test error = 8797348987
+for k = 93 - training error = 14920683644 test error = 15697833417 
 '''
