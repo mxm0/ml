@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split 
 from collections import Counter
+from sklearn.neighbors import KNeighborsClassifier
 
 # Compute average error of classifier
 def loss_function(y_predicted, y_expected):
@@ -36,7 +37,7 @@ def knn(X_train, y_train, X_test, y_predicted, k):
         # return label for most common neighbor
         y_predicted.append(Counter(k_neighbors).most_common(1)[0][0])
         current_test_point += 1
-        print('Y predicted for test point number', current_test_point)
+        print('Y predicted for test point number', current_test_point, '/', test_point_n)
 
 #load data
 df = pd.read_csv('housing.csv')
@@ -114,8 +115,24 @@ X_train.drop(['median_house_value', 'housing_median_age', 'total_rooms', 'total_
 X_test.drop(['median_house_value', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'ocean_proximity'], axis=1, inplace=True)
 
 # Run KNN
-y_predicted = []
-k = 5
-knn(np.array(X_train), y_train, np.array(X_test), y_predicted, k)
+y_predicted_training = []
+y_predicted_test = []
+k = 17
+# KNN Predict training
+#knn(np.array(X_train), y_train, np.array(X_train), y_predicted_training, k)
+# KNN Predict test
+#knn(np.array(X_train), y_train, np.array(X_test), y_predicted_test, k)
+knn = KNeighborsClassifier(n_neighbors=17)
+knn.fir(np.array(X_train), y_train)
+y_predicted_test = knn.predict(np.array(X_test))
+
+# Compute training error
+#print('Training error:', loss_function(y_predicted_training, y_train))
 # Compute test error
-print('Test error:', loss_function(y_predicted, y_test))
+print('Test error:', loss_function(y_predicted_test, y_test))
+
+
+'''
+Using implemented kNN training error = ; test error = 2714582459.19
+Using sklearn kNN, training error = ; test error = 6066602137.98
+'''
