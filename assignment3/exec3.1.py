@@ -1,12 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 # Part a - Random numbers from uniform distribution
 n_100 = np.random.uniform(-1, 0, 100)
 n_1000 = np.random.uniform(-1, 0, 1000)
 n_10000 = np.random.uniform(-1, 0, 10000)
 n_100000 = np.random.uniform(-1, 0, 100000)
+
 '''
 # Plot raw data
 plt.figure('100000')
@@ -120,9 +120,16 @@ plt.show()
 '''
 
 # Part d - Combining multiple random numbers
-m_2 = np.random(sum(np.random.uniform(2)), 10000)
-m_3 = np.random(sum(np.random.uniform(3)), 10000)
-m_5 = np.random(sum(np.random.uniform(5)), 10000)
-m_10 = np.random(sum(np.random.uniform(10)), 10000)
-m_20 = np.random(sum(np.random.uniform(20)), 10000)
+'''
+val = [2,3,5,10,20]
 
+for i in val:
+  rv = 0
+  for k in range(k):
+    rv += np.random.uniform(0.0,1.0)
+  plt.scatter(
+'''
+
+m_2 = [sum((np.random.uniform(-1, 0, 2))) for i in range(20)]
+plt.scatter(enumerate(m_2))
+plt.show()
