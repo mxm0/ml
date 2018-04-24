@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 import scipy.io
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
+from sklearn.metrics import mean_squared_error
 
 train_data = scipy.io.loadmat('usps/usps_train.mat')
 test_data = scipy.io.loadmat('usps/usps_test.mat')
@@ -19,20 +20,21 @@ i = 0
 for label in train_data['train_label']:
     if label == 2 or label == 3:
         X_train.append(np.float64(train_data['train_data'][i]))
-        y_train.append(label)
+        y_train.append(label[0])
     i += 1
 
 i = 0
 for label in test_data['test_label']:
     if label == 2 or label == 3:
         X_test.append(np.float64(test_data['test_data'][i]))
-        y_test.append(label)
+        y_test.append(label[0])
     i += 1
 
 X_train, y_train, X_test, y_test = np.array(X_train), np.array(y_train), np.array(X_test), np.array(y_test)
 
 # Part b - Plotting few examples
 # I flipped and rotate the matrix so it's easier to recognize the numbers
+'''
 plt.figure('Number 2')
 plt.imshow(np.fliplr(np.rot90(X_test[30].reshape(16, 16), 1, (1, 0))), cmap='gray')
 plt.figure('Number 3')
@@ -40,6 +42,36 @@ plt.imshow(np.fliplr(np.rot90(X_test[170].reshape(16, 16), 1, (1, 0))), cmap='gr
 plt.figure('Number 3v2')
 plt.imshow(np.fliplr(np.rot90(X_test[199].reshape(16, 16), 1, (1, 0))), cmap='gray')
 plt.show()
+'''
 
 #Part c - Run KNN for different k values and evaluate results
+k_neighbors = [1, 3, 5, 7, 10, 15]
+train_error = []
+test_error  = []
 
+for k in k_neighbors:
+    y_predicted_test = []
+    y_predicted_training = []
+
+    knn = KNeighborsClassifier(n_neighbors = k)
+    knn.fit(X_train, y_train)
+    y_predicted_test = knn.predict(X_test)
+    y_predicted_training = knn.predict(X_train)
+
+    train_err = mean_squared_error(y_train, y_predicted_training)
+    test_err = mean_squared_error(y_test, y_predicted_test)
+
+    print('For k =', k, ', Training error:', train_err ,'- Test error:', test_err)
+    train_error.append(train_err)
+    test_error.append(test_err)
+
+plt.figure('Test/Train error for K neighbors')
+plt.plot(k_neighbors, train_error, color='red', label='Train error')
+plt.plot(k_neighbors, test_error, label='Test error')
+plt.xticks(k_neighbors)
+plt.legend()
+plt.ylabel('Mean Squared Error')
+plt.xlabel('K neighbors')
+plt.show()
+
+#Part d - Classify digit 3 from 8 and compare results
