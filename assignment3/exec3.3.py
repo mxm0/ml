@@ -10,7 +10,6 @@ from sklearn.metrics import mean_squared_error
 train_data = scipy.io.loadmat('usps/usps_train.mat')
 test_data = scipy.io.loadmat('usps/usps_test.mat')
 
-'''
 # Part a -  Prepare train and test data for classes 2 & 3
 X_train = np.float64(train_data['train_data'][1000:3000])
 X_test = np.float64(test_data['test_data'][100:300])
@@ -33,6 +32,7 @@ k_neighbors = [1, 3, 5, 7, 10, 15]
 train_error = []
 test_error  = []
 
+print('Classifying digits 2 & 3...')
 for k in k_neighbors:
     y_predicted_test = []
     y_predicted_training = []
@@ -57,7 +57,11 @@ plt.legend()
 plt.ylabel('Mean Squared Error')
 plt.xlabel('K neighbors')
 plt.show()
+
 '''
+The classifier seems to be able to distinguish the digits quite well. With k = 1, 3, ,5 , 7 the test error is 0.005 using a mean squared loss function.
+'''
+
 #Part d - Classify digit 3 from 8 and compare results
 X_train = np.float64(train_data['train_data'][2000:3000])
 X_test = np.float64(test_data['test_data'][200:300])
@@ -72,6 +76,7 @@ k_neighbors = [1, 3, 5, 7, 10, 15]
 train_error = []
 test_error  = []
 
+print('\nClassifying digits 3 & 8...')
 for k in k_neighbors:
     y_predicted_test = []
     y_predicted_training = []
@@ -97,3 +102,6 @@ plt.ylabel('Mean Squared Error')
 plt.xlabel('K neighbors')
 plt.show()
 
+'''
+The test error is still relative low however misclassification is higher. Probably because the 3 and 8 have a higher similarity. 
+'''
