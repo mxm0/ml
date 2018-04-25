@@ -10,31 +10,16 @@ from sklearn.metrics import mean_squared_error
 train_data = scipy.io.loadmat('usps/usps_train.mat')
 test_data = scipy.io.loadmat('usps/usps_test.mat')
 
+
 # Part a -  Prepare train and test data for classes 2 & 3
-X_train = []
-X_test = []
-y_train = []
-y_test = []
-
-i = 0
-for label in train_data['train_label']:
-    if label == 2 or label == 3:
-        X_train.append(np.float64(train_data['train_data'][i]))
-        y_train.append(label[0])
-    i += 1
-
-i = 0
-for label in test_data['test_label']:
-    if label == 2 or label == 3:
-        X_test.append(np.float64(test_data['test_data'][i]))
-        y_test.append(label[0])
-    i += 1
-
-X_train, y_train, X_test, y_test = np.array(X_train), np.array(y_train), np.array(X_test), np.array(y_test)
+X_train = np.float64(train_data['train_data'][1000:3000])
+X_test = np.float64(test_data['test_data'][100:300])
+y_train = train_data['train_label'][1000:3000].flatten()
+y_test = test_data['test_label'][100:300].flatten()
 
 # Part b - Plotting few examples
 # I flipped and rotate the matrix so it's easier to recognize the numbers
-'''
+
 plt.figure('Number 2')
 plt.imshow(np.fliplr(np.rot90(X_test[30].reshape(16, 16), 1, (1, 0))), cmap='gray')
 plt.figure('Number 3')
@@ -42,7 +27,6 @@ plt.imshow(np.fliplr(np.rot90(X_test[170].reshape(16, 16), 1, (1, 0))), cmap='gr
 plt.figure('Number 3v2')
 plt.imshow(np.fliplr(np.rot90(X_test[199].reshape(16, 16), 1, (1, 0))), cmap='gray')
 plt.show()
-'''
 
 #Part c - Run KNN for different k values and evaluate results
 k_neighbors = [1, 3, 5, 7, 10, 15]
@@ -75,3 +59,4 @@ plt.xlabel('K neighbors')
 plt.show()
 
 #Part d - Classify digit 3 from 8 and compare results
+
