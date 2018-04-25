@@ -49,7 +49,7 @@ for k in k_neighbors:
     train_error.append(train_err)
     test_error.append(test_err)
 
-plt.figure('Test/Train error for K neighbors')
+plt.figure('Test/Train error digits 2&3 for K neighbors')
 plt.plot(k_neighbors, train_error, color='red', label='Train error')
 plt.plot(k_neighbors, test_error, label='Test error')
 plt.xticks(k_neighbors)
@@ -87,4 +87,13 @@ for k in k_neighbors:
     print('For k =', k, ', Training error:', train_err ,'- Test error:', test_err)
     train_error.append(train_err)
     test_error.append(test_err)
+
+plt.figure('Test/Train error digits 3&8 for K neighbors')
+plt.plot(k_neighbors, train_error, color='red', label='Train error')
+plt.plot(k_neighbors, test_error, label='Test error')
+plt.xticks(k_neighbors)
+plt.legend()
+plt.ylabel('Mean Squared Error')
+plt.xlabel('K neighbors')
+plt.show()
 
