@@ -120,16 +120,80 @@ plt.show()
 '''
 
 # Part d - Combining multiple random numbers
-'''
-val = [2,3,5,10,20]
+ # The values are gaussian or binomial like as expected
 
-for i in val:
-  rv = 0
-  for k in range(k):
-    rv += np.random.uniform(0.0,1.0)
-  plt.scatter(
+'''
+for M in [2,3,5,10,20]:
+  samples = 200
+  m_2 = np.array([sum((np.random.uniform(-1, 0, M))) for i in range(samples)])
+
+  plt.scatter(m_2, range(samples))
+  plt.xlabel("Value")
+  plt.ylabel("Value Index")
+  plt.show()
+  plt.hist(m_2)
+  plt.show()
 '''
 
-m_2 = [sum((np.random.uniform(-1, 0, 2))) for i in range(20)]
-plt.scatter(enumerate(m_2))
+#Part e
+#We set radius to 10. Then we generate a random angle and then place our point at distance 0 to raidus in this angle
+#one might argue that distance 0 is "unfair"
+
+r = 10.0
+
+import math
+result = []
+samples2 = 20000
+for i in range(samples2):
+  angle = np.random.uniform(0.0, 2*3.1415926535)
+  distance = np.random.uniform(0.0, r)
+  result.append([distance * math.cos(angle),distance * math.sin(angle)])
+
+
+
+plt.scatter(np.array([result[i-1][0] for i in range(samples2)]), np.array([result[i-1][1] for i in range(samples2)]))
+plt.xlabel("X")
+plt.ylabel("Y")
 plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
