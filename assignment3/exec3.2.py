@@ -27,7 +27,7 @@ plt.show()
 
 Z = np.matmul(V.transpose(),V)
 
-print Z
+print(Z)
 
 # obviously the inverse of V multiplied with itself gives the neutral element
 

@@ -34,6 +34,7 @@ for col in df:
 From the data plotted it looks like the median income, housing median age and
 median house value data are the closest to a normal distribution.
 '''
+
 # Plot latitude/longitude
 plt.figure('GeoMap')
 plt.title('Geographic Map House values')

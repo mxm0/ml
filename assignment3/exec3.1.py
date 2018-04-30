@@ -122,7 +122,7 @@ plt.show()
 # Part d - Combining multiple random numbers
  # The values are gaussian or binomial like as expected
 
-'''
+
 for M in [2,3,5,10,20]:
   samples = 200
   m_2 = np.array([sum((np.random.uniform(-1, 0, M))) for i in range(samples)])
@@ -133,7 +133,6 @@ for M in [2,3,5,10,20]:
   plt.show()
   plt.hist(m_2)
   plt.show()
-'''
 
 #Part e
 #We set radius to 10. Then we generate a random angle and then place our point at distance 0 to raidus in this angle
