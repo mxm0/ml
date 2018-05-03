@@ -58,6 +58,16 @@ print("Average L2 loss on test data: ", test_error)
 
 # Part d - Onon-linear features
 
+# add quadratic feature
+x_square = np.power(X_train, 2)
+X_train_1 = np.hstack((X_train_1, x_square))
+
+# add cubic feature
+x_cubic = np.power(X_train, 3)
+x_train_1 = np.hstack((X_train_1, x_cubic))
 
 
+result = least_squares(X_train_1, y_train)
+print(result)
+print(np.polyfit(X_train.flatten(), y_train, 2))
 # Part e - Outlier
