@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.preprocessing import PolynomialFeatures
 import pandas as pd
 import scipy.io
 import matplotlib.pyplot as plt
@@ -24,7 +25,7 @@ plt.xlabel("X test")
 plt.ylabel("Y test")
 
 # Concatenate 1 for the bias term
-X_train_1 = np.insert(X_train, 1, 1.0, axis=1)
+X_train_1 = np.insert(X_train, 0, 1.0, axis=1)
 
 # Part b - Learning
 
@@ -34,14 +35,11 @@ def least_squares(X, Y):
     w = np.linalg.solve(a, b)
     return w
 
-m, c = least_squares(X_train_1, y_train)
-
-y_pred = []
-for x in X_test.flatten():
-  y_pred.append(m * x + c)
-
+w = least_squares(X_train_1, y_train.flatten())
+p = np.poly1d(w)
+y_pred = p(X_train)
 plt.figure("Train data")
-plt.plot(X_train, m * X_train + c, 'r')
+plt.plot(np.sort(X_train.flatten()), np.sort(y_pred.flatten()), 'r')
 #plt.show()
 
 # Part c - Evaluation
@@ -53,8 +51,9 @@ def lossL2(y, y_pred):
     err += np.square((y[i] - y_pred[i]))
   return 1/n_points * err 
 
+y_pred = p(X_test).flatten()
 test_error = lossL2(y_test, y_pred)
-print("Average L2 loss on test data: ", test_error)
+print("Average L2 loss on test data:", test_error)
 
 # Part d - Onon-linear features
 
@@ -64,10 +63,20 @@ X_train_1 = np.hstack((X_train_1, x_square))
 
 # add cubic feature
 x_cubic = np.power(X_train, 3)
-x_train_1 = np.hstack((X_train_1, x_cubic))
+X_train_1 = np.hstack((X_train_1, x_cubic))
 
+# Re=learn
+w = np.poly1d(least_squares(X_train_1, y_train)[::-1])
+y_pred = w(X_test).flatten()
+print("Average L2 loss on test data with added basis functions:", lossL2(y_test, y_pred))
 
-result = least_squares(X_train_1, y_train)
-print(result)
-print(np.polyfit(X_train.flatten(), y_train, 2))
+# Plotting on train and test data
+
+X_train = np.sort(X_train.flatten())
+plt.plot(X_train, w(X_train), 'r')
+
+X_test = np.sort(X_test.flatten())
+plt.figure("Test data")
+plt.plot(X_test, w(X_test), 'r')
+plt.show()
 # Part e - Outlier
