@@ -31,5 +31,5 @@ ys = polynomial(x)
 plt.plot(x, ys, color='black')
 print('By day: 817 traffic per hour should hit', int(polynomial(817)))
 
-#plt.show()
+plt.show()
 
