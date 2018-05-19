@@ -1,0 +1,11 @@
+In order to configure the SVM you first need to create the object SVC and specifiy the kernel to use. For instance if we wanted to configure the SVM to be a classifier and use a linear kernel we'd type: SVC(kernel = "linear"). At the same time during creation you can configure the different parameters like C, gamma and polynomial degree depending on the kernel used.
+
+In order to train the SVM then the fit() function has to be caleed, which takes as input the training data.
+
+Classification of test points can be executed by calling the function predict(), which obviously takes the test points as input.
+
+The support vectors can be accessed by the attribute support_vectors_ on the SVM object.	
+
+The SVM from sklearn support multi-class classification by default as long as the input data into different "classes".
+
+
