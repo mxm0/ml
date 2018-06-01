@@ -1,0 +1,15 @@
+Part c:
+
+Using 150 as a number of components seems to be a good choice. You can select less components and still achieve a 95% variance coverage but the projection error increases. The estimated squared projection error is 1.089 rounded.
+
+----------------------------------------------------------------------------------
+
+Part d -
+
+It depends on the definition of acceptable but if we assume an average precision of at least 70% then we need minimum around 30 components.
+
+----------------------------------------------------------------------------------
+
+Part e-
+
+I think It could be used but the results would not enough precise to be useful in real world scenarios. First of all the algorithm would need to have a higher precision, closer to 100% and not just in the 80% range. Moreover in the lecture it was mentioned that Eigenfaces algorithm is quite susceptible to different light conditions. That means the picture on the passport and the photo of the person should be taken in the same light condition. So maybe with a rally good training data and same light condition It may be possible.
