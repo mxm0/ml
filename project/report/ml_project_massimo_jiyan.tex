@@ -1,0 +1,67 @@
+\documentclass[a4paper, 11pt]{article}
+\usepackage{comment} % enables the use of multi-line comments (\ifx \fi) 
+\usepackage{lipsum} %This package just generates Lorem Ipsum filler text. 
+\usepackage{fullpage} % changes the margin
+
+\begin{document}
+%Header-Make sure you update this information!!!!
+\noindent
+\large\textbf{Machine Learning Project report} \hfill \textbf{Jiyan PutYourLastNameHere} \\
+\normalsize ECE 100-003 \hfill \textbf{Massimo Innocentini} \\
+Prof. norman Hendrich \\
+TA: Philipp Ruppel \hfill Due Date: 30/06/2018
+
+\section*{Introduction}
+The dataset that we decided to analyse is from the Forest Cover Type competition. The goal of the competition is to predict the type of forest given a set of features, hence It is a classification problem. Kaggle provides a training set of data with the forest cover type, in total there are 15120 observations, and a test data set with only the observed features with 565892 samples. There are 7 type of forest cover used in the competition, each assigned an integer number: 
+
+\begin{enumerate}
+  \item \texttt{Spruce/Fir}
+  \item \texttt{Lodgepole Pine}
+  \item \texttt{Ponderos Pine}
+  \item \texttt{Cottonwood/Willow}
+  \item \texttt{Aspen}
+  \item \texttt{Douglas-fir}
+  \item \texttt{Krummholz}
+\end{enumerate}
+
+There are 13 type of features which describe a 30m x 30m area in each sample, the features are:
+
+\begin{itemize}
+  \item \texttt{Elevation}: 
+  \item \texttt{Aspect}: 
+  \item \texttt{Slope}: 
+  \item \texttt{Horizontal\_Distance\_To\_Hydrology}: 
+  \item \texttt{Vertical\_Distance\_To\_Hydrology}: 
+  \item \texttt{Horizontal\_Distance\_to\_Roadways}: 
+  \item \texttt{Hillshade\_9am}: 
+  \item \texttt{Hillshade\_Noon}:
+  \item \texttt{Hillshade\_3pm}:
+  \item \texttt{Horizontal\_Distance\_To\_Fire\_Points}: 
+  \item \texttt{Wilderness\_Area}: 
+  \item \texttt{Soil\_Type}: 
+  \item \texttt{Cover\_Type} :
+\end{itemize} 
+
+Few of those terms are clear like elevation, however there some of them need further explanation. The \texttt{Slope} and \texttt{Aspect} identify respectively the land inclination and the direction of the inclination in degrees. The hydrology distance reports the distance from the closest water source. The hill shade is a grayscale representation value of the illumination of the surface, which takes into account the position of the sun at different times. The values returned range from 0 to 255.
+
+\texttt{Wilderness area} is divided into 4 groups: Rawah , Neota, Comanche Peak and Cache la Poudre. For simplicity in the dataset each is assigned an integer number. As the name suggests wilderness area are reservations which are untouched by humans in order to prevent natural conditions and wildlife. Finally the \texttt{Soil type} is also divided into subgroups, the data identifies 40 of them. Every feature is of integer type except the wilderness area and soil type columns which are binary.
+
+\section*{Data Analysis}
+
+
+\section*{Interesting Features}
+
+
+\section*{Data Processing Findings}
+
+
+\section*{Conclusion}
+
+
+\begin{thebibliography}{9}
+\bibitem{Robotics} Fred G. Martin \emph{Robotics Explorations: A Hands-On Introduction to Engineering}. New Jersey: Prentice Hall.
+\bibitem{Flueck}  Flueck, Alexander J. 2005. \emph{ECE 100}[online]. Chicago: Illinois Institute of Technology, Electrical and Computer Engineering Department, 2005 [cited 30
+August 2005]. Available from World Wide Web: (http://www.ece.iit.edu/~flueck/ece100).
+\end{thebibliography}
+
+\end{document}
