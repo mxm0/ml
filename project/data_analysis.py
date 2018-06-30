@@ -82,10 +82,8 @@ plt.show()
 # Drop target col and normalize data. We have values all over the place like 'Elevation' which goes up to thousands,
 # while other values are inherently low.
 
-#X = df.drop(["Cover_Type", 'Horizontal_Distance_To_Hydrology', 'Horizontal_Distance_To_Roadways', 'Hillshade_9am', 'Hillshade_Noon', 'Horizontal_Distance_To_Fire_Points'], axis = 1)
-#X = df[['Elevation', 'Aspect', 'Slope', 'Hillshade_3pm', 'Wilderness_Area4', 'Soil_Type40', 'Soil_Type13', 'Soil_Type24', 'Soil_Type12', 'Soil_Type4', 'Soil_Type29', 'Soil_Type22', 'Soil_Type14', 'Soil_Type17']]
-X_scaled = preprocessing.normalize(df.drop("Cover_Type", axis=1), axis=0)
-'''
+X_scaled = preprocessing.normalize(df.drop(['Id', "Cover_Type"], axis=1), axis=0)
+
 # Apply k-manes clustering
 k = 7
 kmeans = cluster.KMeans(n_clusters=k)
@@ -93,10 +91,8 @@ kmeans.fit(X_scaled)
 
 inertia = kmeans.inertia_
 print('Silhouette Score:', metrics.silhouette_score(X_scaled, df['Cover_Type'], metric='euclidean'))
-'''
 
-'''
-# It looks like the soil type feature overlap so dimensionality reduction should help in this case.
+# Dimensionality reduction with PCA
 pca = decomposition.PCA(n_components=40)
 pca.fit(X_scaled)
 X = pca.transform(X_scaled)
@@ -113,5 +109,3 @@ plt.legend(loc='best', shadow=False, scatterpoints=1)
 plt.title('PCA of Forest Cover Type')
 #plt.show()
 print(pca.explained_variance_ratio_)
-'''
-# Final data model to use for trainig the model
