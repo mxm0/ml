@@ -106,7 +106,7 @@ def baseline_model():
 	model.add(Dense(8, input_dim=12, activation='relu'))
 	model.add(Dense(7, activation='softmax'))
 	# Compile model
-	model.compile(loss='', optimizer='adam', metrics=['accuracy'])
+	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 	return model
 
 predictor = KerasClassifier(build_fn = baseline_model, epochs=200, batch_size = 5, verbose = 0)
