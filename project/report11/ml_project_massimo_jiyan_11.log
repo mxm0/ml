@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.12.6)  30 JUN 2018 12:56
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.12.6)  2 JUL 2018 00:06
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -169,30 +169,55 @@ e
 ))
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 29.
 
-
-LaTeX Warning: Empty `thebibliography' environment on input line 31.
-
-[1
+(/usr/local/texlive/2017/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 29.
+ [1
 
 {/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-(./ml_project_massimo_jiyan_11.aux) ) 
+<img/knn_no_norm.png, id=11, 732.7375pt x 557.08125pt>
+File: img/knn_no_norm.png Graphic file (type png)
+
+<use img/knn_no_norm.png>
+Package pdftex.def Info: img/knn_no_norm.png used on input line 47.
+(pdftex.def)             Requested size: 452.9679pt x 344.38376pt.
+ <img/knn_norm.png, id=13, 811.03pt x 599.23875pt>
+File: img/knn_norm.png Graphic file (type png)
+
+<use img/knn_norm.png>
+Package pdftex.def Info: img/knn_norm.png used on input line 54.
+(pdftex.def)             Requested size: 452.9679pt x 334.68448pt.
+ [2]
+<img/extra_trees.png, id=17, 1001.7425pt x 712.6625pt>
+File: img/extra_trees.png Graphic file (type png)
+
+<use img/extra_trees.png>
+Package pdftex.def Info: img/extra_trees.png used on input line 73.
+(pdftex.def)             Requested size: 452.9679pt x 322.2502pt.
+ [3 <./img/knn_no_norm.png>] [4 <./img/knn_norm.png>]
+[5 <./img/extra_trees.png>] [6] (./ml_project_massimo_jiyan_11.aux) ) 
 Here is how much of TeX's memory you used:
- 2838 strings out of 492995
- 44970 string characters out of 6132704
- 203220 words of memory out of 5000000
- 6389 multiletter control sequences out of 15000+600000
- 5458 words of font info for 20 fonts, out of 8000000 for 9000
+ 2884 strings out of 492995
+ 45756 string characters out of 6132704
+ 208247 words of memory out of 5000000
+ 6426 multiletter control sequences out of 15000+600000
+ 5883 words of font info for 22 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,4n,38p,702b,107s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2017/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2017/texmf-dist/fonts/t
-ype1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2017/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmr10.pfb>
-Output written on ml_project_massimo_jiyan_11.pdf (1 page, 45103 bytes).
+ 39i,5n,39p,903b,265s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/loca
+l/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local
+/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/
+texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/te
+xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/tex
+live/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on ml_project_massimo_jiyan_11.pdf (6 pages, 179628 bytes).
 PDF statistics:
- 20 PDF objects out of 1000 (max. 8388607)
- 13 compressed objects within 1 object stream
+ 50 PDF objects out of 1000 (max. 8388607)
+ 30 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 16 words of extra memory for PDF output out of 10000 (max. 10000000)
 

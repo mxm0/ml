@@ -15,7 +15,11 @@ from keras.utils import np_utils
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.pipeline import Pipeline
-from keras.optimizers import SGD
+from sklearn import ensemble
+from sklearn.decomposition import PCA
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score
+
 # Load training data
 # We need to shufle the data first cause they are ordered
 
@@ -60,27 +64,35 @@ df['Mean_Amenities']=(df.Horizontal_Distance_To_Fire_Points + df.Horizontal_Dist
 #Mean Distance to Fire and Water 
 df['Mean_Fire_Hyd']=(df.Horizontal_Distance_To_Fire_Points + df.Horizontal_Distance_To_Hydrology) / 2 
 
+
 cols = ['Elevation', 'Aspect', 'Slope',
        'Horizontal_Distance_To_Hydrology', 'Vertical_Distance_To_Hydrology',
-       'Horizontal_Distance_To_Roadways', 'Hillshade_9am', 'Hillshade_Noon', 
+       'Horizontal_Distance_To_Roadways', 'Hillshade_9am', 'Hillshade_Noon',
        'Hillshade_3pm', 'Horizontal_Distance_To_Fire_Points', 'Wilderness_Area',
        'soil_type', 'HF1', 'HF2', 'HR1', 'FR1', 'FR2', 'Mean_Amenities', 'slope_hyd',
        'Mean_Fire_Hyd']
+
+#cols = ['Elevation', 'Aspect', 
+#       'Wilderness_Area',
+#       'soil_type', 'HF1', 'HF2', 'HR1' ,'HR2','Mean_Amenities', 'slope_hyd',
+#       'Mean_Fire_Hyd']
 
 # Create train and test data. For the moment we split the train data 80/20 to performs3# test locally without submitting the result to Kaggle.
 X = df[cols].values
 y = df['Cover_Type'].values
 
+X = df.drop(['Id', 'Cover_Type'], axis=1).values
+y = df['Cover_Type'].values
+
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
 # Normalize data
-min_max_scaler = preprocessing.MinMaxScaler()
 
+min_max_scaler = preprocessing.MinMaxScaler()
 X_train = min_max_scaler.fit_transform(X_train)
 X_test = min_max_scaler.fit_transform(X_test)
 
-'''
-# Apply kNN, trying multiple Ks
+#################### Apply kNN, trying multiple Ks ####################
 #Setup arrays to store training and test accuracies
 Ks = np.arange(1,20)
 train_accuracy = []
@@ -109,14 +121,12 @@ plt.xlabel('Number of neighbors')
 plt.ylabel('Accuracy')
 plt.show()
 
-# Apply SVM
+#################### Apply SVM ####################
 
-'''
-# Apply Neural Network
+
+#################### Apply Neural Network ####################
 seed = 13
 np.random.seed(seed)
-
-sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 
 # define baseline model
 def baseline_model():
@@ -135,11 +145,37 @@ estimator = baseline_model()
 # Hot one encoding of the target values
 y_train_hot = np_utils.to_categorical(y_train - 1)
 y_test_hot = np_utils.to_categorical(y_test - 1)
-
 # Train model
-estimator.fit(X_train, y_train_hot, epochs=300, batch_size=128)
+estimator.fit(X_train, y_train_hot, epochs=100, batch_size=128)
 
 # Predict on test data
 #predicted_cover = estimator.predict(X_test[:1000])
 print(estimator.evaluate(X_test, y_test_hot, batch_size = 128))
-# 0.73875661438735074
+
+#################### Apply Extra-trees classifier ####################
+
+n_estimators = np.arange(50, 1050, 50)
+test_accuracy = []
+
+for n_est in (n_estimators):
+    estimator = ensemble.ExtraTreesClassifier(n_estimators = n_est, random_state=1)
+    estimator.fit(X_train, y_train)
+    #Compute accuracy on the test set
+    test_accuracy.append(estimator.score(X_test, y_test))
+
+print(test_accuracy)
+plt.title('ExtraTreesClassifier')
+plt.plot(n_estimators, test_accuracy, label='Testing Accuracy')
+plt.legend()
+plt.xticks(n_estimators)
+plt.xlabel('Number of estimators')
+plt.ylabel('Accuracy')
+plt.show()
+
+#################### Apply XGBoost classifier ####################
+model = XGBClassifier(objective='multi:softmax', num_class=7)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+print(y_pred[100:])
+predictions = [round(value) for value in y_pred]
+print(accuracy_score(y_test, y_pred)*100)
