@@ -9,7 +9,7 @@ from sklearn import decomposition
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Dropout
 from keras.wrappers.scikit_learn import KerasClassifier
 from keras.utils import np_utils
 from sklearn.model_selection import cross_val_score
@@ -44,7 +44,7 @@ df = wilderness_feature(df)
 df = soil_features(df)
 cols = ['Elevation', 'Aspect', 'Slope',
        'Horizontal_Distance_To_Hydrology', 'Vertical_Distance_To_Hydrology',
-       'Horizontal_Distance_To_Roadways', 'Hillshade_9am', 'Hillshade_Noon',
+       'Horizontal_Distance_To_Roadways', 'Hillshade_9am', 'Hillshade_Noon', 
        'Hillshade_3pm', 'Horizontal_Distance_To_Fire_Points', 'Wilderness_Area',
        'soil_type']
 
@@ -63,7 +63,7 @@ X_test = min_max_scaler.fit_transform(X_test)
 '''
 # Apply kNN, trying multiple Ks
 #Setup arrays to store training and test accuracies
-Ks = np.arange(1,10)
+Ks = np.arange(1,20)
 train_accuracy = []
 test_accuracy = []
 
@@ -89,31 +89,36 @@ plt.xticks(np.arange(1,20))
 plt.xlabel('Number of neighbors')
 plt.ylabel('Accuracy')
 plt.show()
-'''
 
 # Apply SVM
 
+'''
 # Apply Neural Network
 seed = 13
 np.random.seed(seed)
 
-
-
 # define baseline model
 def baseline_model():
-	# create model
-	model = Sequential()
-	model.add(Dense(8, input_dim=12, activation='relu'))
-	model.add(Dense(7, activation='softmax'))
-	# Compile model
-	model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-	return model
+    # create model
+    model = Sequential()
+    model.add(Dense(64, input_dim=12, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(64, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(7, activation='softmax'))
+    # Compile model
+    model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
+    return model
 
-predictor = KerasClassifier(build_fn = baseline_model, epochs=200, batch_size = 5, verbose = 0)
+estimator = baseline_model()
+# Hot one encoding of the target values
+y_train_hot = np_utils.to_categorical(y_train - 1)
+y_test_hot = np_utils.to_categorical(y_test - 1)
 
-# Convert integers to one hot encoded
-y = np_utils.to_categorical(y_train)
+# Train model
+estimator.fit(X_train, y_train_hot, epochs=500, batch_size=128)
 
-kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
-results = cross_val_score(predictor, X_train, y_train , cv=kfold)
-print("Baseline: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
+# Predict on test data
+predicted_cover = estimator.predict(X_test[:1000])
+print(estimator.evaluate(X_test, y_test_hot, batch_size = 128))
+# 0.73875661438735074

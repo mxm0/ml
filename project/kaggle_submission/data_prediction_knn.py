@@ -35,19 +35,18 @@ df_test = soil_features(df_test)
 
 cols = ['Elevation', 'Aspect', 'Slope',
        'Horizontal_Distance_To_Hydrology', 'Vertical_Distance_To_Hydrology',
-       'Horizontal_Distance_To_Roadways', 'Hillshade_9am', 'Hillshade_Noon',
+       'Horizontal_Distance_To_Roadways', 'Hillshade_9am', 
        'Hillshade_3pm', 'Horizontal_Distance_To_Fire_Points', 'Wilderness_Area',
        'soil_type']
 
 X = df[cols].values
-#X = df.drop(['Id', 'Cover_Type', 'Hillshade_Noon'], axis=1).values
 y_train = df['Cover_Type'].values
 
 # Normalize data
 min_max_scaler = preprocessing.MinMaxScaler()
 
 X_train = min_max_scaler.fit_transform(X)
-X_test = min_max_scaler.fit_transform(df_test.drop(['Id', 'Hillshade_Noon'], axis=1).values)
+X_test = min_max_scaler.fit_transform(df_test[cols].values)
 
 # Apply kNN, trying multiple Ks
 knn = KNeighborsClassifier(n_neighbors=3)
@@ -57,8 +56,9 @@ knn.fit(X_train, y_train)
 
 # Predict
 predicted_cover = knn.predict(X_test)
-
+'''
 # Prepare submission file
-my_submission = pd.DataFrame({'Cover_Type': predicted_cover, 'Id': df_test.Id})
+my_submission = pd.DataFrame({'Id': df_test.Id, 'Cover_Type': predicted_cover})
 # you could use any filename. We choose submission here
 my_submission.to_csv('submission.csv', index=False)
+'''
