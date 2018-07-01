@@ -15,7 +15,7 @@ from keras.utils import np_utils
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.pipeline import Pipeline
-
+from keras.optimizers import SGD
 # Load training data
 # We need to shufle the data first cause they are ordered
 
@@ -42,11 +42,30 @@ def soil_features(df):
 
 df = wilderness_feature(df)
 df = soil_features(df)
+
+####################### Train data #############################################
+df['HF1'] = df['Horizontal_Distance_To_Hydrology']+df['Horizontal_Distance_To_Fire_Points']
+df['HF2'] = abs(df['Horizontal_Distance_To_Hydrology']-df['Horizontal_Distance_To_Fire_Points'])
+df['HR1'] = abs(df['Horizontal_Distance_To_Hydrology']+df['Horizontal_Distance_To_Roadways'])
+df['HR2'] = abs(df['Horizontal_Distance_To_Hydrology']-df['Horizontal_Distance_To_Roadways'])
+df['FR1'] = abs(df['Horizontal_Distance_To_Fire_Points']+df['Horizontal_Distance_To_Roadways'])
+df['FR2'] = abs(df['Horizontal_Distance_To_Fire_Points']-df['Horizontal_Distance_To_Roadways'])
+#df['ele_vert'] = df.Elevation-train.Vertical_Distance_To_Hydrology
+
+df['slope_hyd'] = (df['Horizontal_Distance_To_Hydrology']**2+df['Vertical_Distance_To_Hydrology']**2)**0.5
+df.slope_hyd=df.slope_hyd.map(lambda x: 0 if np.isinf(x) else x) # remove infinite value if any
+
+#Mean distance to Amenities 
+df['Mean_Amenities']=(df.Horizontal_Distance_To_Fire_Points + df.Horizontal_Distance_To_Hydrology + df.Horizontal_Distance_To_Roadways) / 3 
+#Mean Distance to Fire and Water 
+df['Mean_Fire_Hyd']=(df.Horizontal_Distance_To_Fire_Points + df.Horizontal_Distance_To_Hydrology) / 2 
+
 cols = ['Elevation', 'Aspect', 'Slope',
        'Horizontal_Distance_To_Hydrology', 'Vertical_Distance_To_Hydrology',
        'Horizontal_Distance_To_Roadways', 'Hillshade_9am', 'Hillshade_Noon', 
        'Hillshade_3pm', 'Horizontal_Distance_To_Fire_Points', 'Wilderness_Area',
-       'soil_type']
+       'soil_type', 'HF1', 'HF2', 'HR1', 'FR1', 'FR2', 'Mean_Amenities', 'slope_hyd',
+       'Mean_Fire_Hyd']
 
 # Create train and test data. For the moment we split the train data 80/20 to performs3# test locally without submitting the result to Kaggle.
 X = df[cols].values
@@ -97,17 +116,19 @@ plt.show()
 seed = 13
 np.random.seed(seed)
 
+sgd = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+
 # define baseline model
 def baseline_model():
     # create model
     model = Sequential()
-    model.add(Dense(64, input_dim=12, activation='relu'))
+    model.add(Dense(128, input_dim=len(cols), activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(64, activation='relu'))
+    model.add(Dense(128, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(7, activation='softmax'))
     # Compile model
-    model.compile(loss='categorical_crossentropy', optimizer='sgd', metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     return model
 
 estimator = baseline_model()
@@ -116,9 +137,9 @@ y_train_hot = np_utils.to_categorical(y_train - 1)
 y_test_hot = np_utils.to_categorical(y_test - 1)
 
 # Train model
-estimator.fit(X_train, y_train_hot, epochs=500, batch_size=128)
+estimator.fit(X_train, y_train_hot, epochs=300, batch_size=128)
 
 # Predict on test data
-predicted_cover = estimator.predict(X_test[:1000])
+#predicted_cover = estimator.predict(X_test[:1000])
 print(estimator.evaluate(X_test, y_test_hot, batch_size = 128))
 # 0.73875661438735074
