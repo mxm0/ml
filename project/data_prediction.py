@@ -8,6 +8,13 @@ from sklearn import cluster, preprocessing, metrics
 from sklearn import decomposition
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.wrappers.scikit_learn import KerasClassifier
+from keras.utils import np_utils
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import KFold
+from sklearn.pipeline import Pipeline
 
 # Load training data
 # We need to shufle the data first cause they are ordered
@@ -35,9 +42,14 @@ def soil_features(df):
 
 df = wilderness_feature(df)
 df = soil_features(df)
+cols = ['Elevation', 'Aspect', 'Slope',
+       'Horizontal_Distance_To_Hydrology', 'Vertical_Distance_To_Hydrology',
+       'Horizontal_Distance_To_Roadways', 'Hillshade_9am', 'Hillshade_Noon',
+       'Hillshade_3pm', 'Horizontal_Distance_To_Fire_Points', 'Wilderness_Area',
+       'soil_type']
 
 # Create train and test data. For the moment we split the train data 80/20 to performs3# test locally without submitting the result to Kaggle.
-X = df.drop(['Id', 'Cover_Type', 'Hillshade_Noon'], axis=1).values
+X = df[cols].values
 y = df['Cover_Type'].values
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
@@ -48,6 +60,7 @@ min_max_scaler = preprocessing.MinMaxScaler()
 X_train = min_max_scaler.fit_transform(X_train)
 X_test = min_max_scaler.fit_transform(X_test)
 
+'''
 # Apply kNN, trying multiple Ks
 #Setup arrays to store training and test accuracies
 Ks = np.arange(1,10)
@@ -67,7 +80,6 @@ for k in (Ks):
     test_accuracy.append(knn.score(X_test, y_test)) 
 print(test_accuracy)
 
-'''
 #Generate plot
 plt.title('k-NN Varying number of neighbors')
 plt.plot(Ks, test_accuracy, label='Testing Accuracy')
@@ -82,9 +94,26 @@ plt.show()
 # Apply SVM
 
 # Apply Neural Network
+seed = 13
+np.random.seed(seed)
 
 
-############             ###########
-############ BEST SO FAR ###########
-############             ###########
-# k = 3, accuracy = 0.799
+
+# define baseline model
+def baseline_model():
+	# create model
+	model = Sequential()
+	model.add(Dense(8, input_dim=12, activation='relu'))
+	model.add(Dense(7, activation='softmax'))
+	# Compile model
+	model.compile(loss='', optimizer='adam', metrics=['accuracy'])
+	return model
+
+predictor = KerasClassifier(build_fn = baseline_model, epochs=200, batch_size = 5, verbose = 0)
+
+# Convert integers to one hot encoded
+y = np_utils.to_categorical(y_train)
+
+kfold = KFold(n_splits=10, shuffle=True, random_state=seed)
+results = cross_val_score(predictor, X_train, y_train , cv=kfold)
+print("Baseline: %.2f%% (%.2f%%)" % (results.mean()*100, results.std()*100))
